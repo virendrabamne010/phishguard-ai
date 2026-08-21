@@ -1,0 +1,44 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# --- Virtual environments ---
+venv/
+.venv/
+.venv-1/
+env/
+
+# --- Frontend / Node ---
+node_modules/
+dist/
+*.local
+
+# --- Secrets & credentials (NEVER commit) ---
+.env
+.env.local
+backend/imap_session.json
+backend/credentials.json
+backend/token.json
+
+# --- Runtime data (contains personal emails!) ---
+backend/data/phishguard.db
+backend/data/*.db-journal
+
+# --- Generated ML artifacts & dataset (regenerate via train script) ---
+backend/app/ml/model_artifacts/*.pkl
+**/phishing_dataset.csv
+
+# --- Logs & temp files ---
+*.log
+*.tmp
+
+# --- OS / Editor ---
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/

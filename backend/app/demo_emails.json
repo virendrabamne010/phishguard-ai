@@ -1,0 +1,72 @@
+[
+  {
+    "id": "demo_001",
+    "subject": "Urgent: Your Account Has Been Compromised",
+    "sender": "security@paypa1-alerts.com",
+    "snippet": "We have detected unauthorized access to your PayPal account...",
+    "body": "Dear Valued Customer,\n\nWe have detected unauthorized access to your PayPal account from an unknown device in Eastern Europe. Your account has been temporarily limited for your protection.\n\nTo restore full access, please verify your identity immediately by clicking the link below:\n\nhttp://paypa1-secure-verify.com/restore?token=abc123\n\nIMPORTANT: Failure to verify within 24 hours will result in PERMANENT account suspension. All funds will be frozen.\n\nAct now to protect your money!\n\nPayPal Security Team"
+  },
+  {
+    "id": "demo_002",
+    "subject": "Team Meeting Tomorrow at 10 AM",
+    "sender": "manager@company.com",
+    "snippet": "Hi team, just a reminder about our weekly standup meeting...",
+    "body": "Hi team,\n\nJust a reminder that we have our weekly standup meeting tomorrow at 10 AM in Conference Room B.\n\nPlease prepare a brief status update covering:\n- What you completed this week\n- What you're working on next\n- Any blockers\n\nAgenda is attached. See you there!\n\nBest,\nRajesh"
+  },
+  {
+    "id": "demo_003",
+    "subject": "CONGRATULATIONS!!! You've Won $500,000!!!",
+    "sender": "prize@international-lottery.com",
+    "snippet": "You have been randomly selected as the grand prize winner...",
+    "body": "CONGRATULATIONS!!!\n\nYou have been randomly selected as the GRAND PRIZE WINNER of the International Email Lottery 2024!\n\nYour winning amount: $500,000.00 USD\n\nTo claim your prize, please reply with:\n1. Full Name\n2. Home Address\n3. Phone Number\n4. Bank Account Number\n5. Date of Birth\n\nYou must respond within 48 HOURS or your prize will be forfeited to the next winner!\n\nDon't miss this ONCE IN A LIFETIME opportunity!!!\n\nSincerely,\nDr. James Wilson\nInternational Lottery Commission"
+  },
+  {
+    "id": "demo_004",
+    "subject": "Your Amazon Order Has Shipped",
+    "sender": "shipping@amazon.com",
+    "snippet": "Your order #112-4567890 has shipped and is on its way...",
+    "body": "Hello,\n\nGreat news! Your order #112-4567890 has shipped and is on its way.\n\nOrder Details:\n- Wireless Bluetooth Headphones (Black)\n- Qty: 1\n- Price: $49.99\n\nEstimated delivery: Thursday, March 15\n\nTrack your package in the Amazon app or visit your Orders page.\n\nThank you for shopping with us!\n\nAmazon.com"
+  },
+  {
+    "id": "demo_005",
+    "subject": "Apple ID: Verify Your Account or It Will Be DISABLED",
+    "sender": "support@apple-id-verify.net",
+    "snippet": "Your Apple ID has been used to sign in from a suspicious device...",
+    "body": "Dear Apple Customer,\n\nYour Apple ID (john@example.com) has been used to sign in to iCloud via web browser from:\n\nDevice: Unknown Windows PC\nLocation: Moscow, Russia\nIP: 185.234.XX.XX\n\nIf this wasn't you, your account may be COMPROMISED!\n\nClick here IMMEDIATELY to secure your account:\nhttp://apple-id-verify.net/secure?id=xyz789\n\nIf you do not verify within 12 hours, your Apple ID will be PERMANENTLY DISABLED and all data will be erased.\n\nApple Support Team"
+  },
+  {
+    "id": "demo_006",
+    "subject": "Lunch today?",
+    "sender": "priya.sharma@gmail.com",
+    "snippet": "Hey! Want to grab lunch? Thinking about that new cafe...",
+    "body": "Hey!\n\nWant to grab lunch today? I was thinking about trying that new cafe near the office — the one with the rooftop seating.\n\nFree around 12:30? My treat since you helped me with the presentation yesterday!\n\nLet me know.\n\nCheers,\nPriya"
+  },
+  {
+    "id": "demo_007",
+    "subject": "IT DEPARTMENT: Mandatory Password Reset - URGENT",
+    "sender": "admin@company-it-helpdesk.com",
+    "snippet": "Your corporate password expires TODAY. Reset immediately...",
+    "body": "ATTENTION ALL EMPLOYEES,\n\nYour corporate password expires TODAY. You MUST reset it immediately to avoid losing access to all company systems including email, VPN, and shared drives.\n\nClick the link below to reset your password:\nhttp://company-it-helpdesk.com/password-reset?emp=12345\n\nYou will need to provide:\n- Current password\n- Employee ID\n- Last 4 digits of SSN (for verification)\n\nFAILURE TO RESET WITHIN 4 HOURS WILL RESULT IN ACCOUNT LOCKOUT.\n\nIT Support Team"
+  },
+  {
+    "id": "demo_008",
+    "subject": "New comment on your pull request #234",
+    "sender": "notifications@github.com",
+    "snippet": "John left a comment: 'Looks good! Just one suggestion...'",
+    "body": "John left a comment on your pull request #234 in repo phishing-detector:\n\n\"Looks good overall! Just one suggestion — can you add error handling for the case where the API returns an empty response? Also, the variable name on line 45 could be more descriptive.\n\nOtherwise, LGTM 👍\"\n\nView the full discussion on GitHub.\n\n—\nYou're receiving this because you authored the pull request."
+  },
+  {
+    "id": "demo_009",
+    "subject": "Bank of America: Suspicious $2,499 Transaction Detected",
+    "sender": "alerts@bankofamerica-secure.com",
+    "snippet": "A suspicious transaction of $2,499.99 was flagged on your account...",
+    "body": "FRAUD ALERT\n\nDear Customer,\n\nWe have detected a suspicious transaction on your Bank of America debit card:\n\nAmount: $2,499.99\nMerchant: Electronics Store - Lagos, Nigeria\nDate: Today\n\nIf you did NOT authorize this transaction, click below IMMEDIATELY to block your card and dispute the charge:\n\nhttp://boa-fraud-alerts.com/dispute?ref=fraud2024\n\nWARNING: If you do not respond within 24 hours, this transaction will be processed and cannot be reversed.\n\nBank of America Fraud Protection"
+  },
+  {
+    "id": "demo_010",
+    "subject": "Course Registration Confirmed: CS-301 Machine Learning",
+    "sender": "registrar@university.edu",
+    "snippet": "You have successfully enrolled in CS-301 for Fall 2024...",
+    "body": "Dear Student,\n\nThis confirms your enrollment in the following course:\n\nCourse: CS-301 — Machine Learning Fundamentals\nSemester: Fall 2024\nSchedule: Mon/Wed 2:00-3:30 PM\nRoom: Engineering Hall 205\nInstructor: Dr. Patel\n\nClasses begin August 26. Please review the syllabus on the university portal before the first class.\n\nTextbook: 'Pattern Recognition and Machine Learning' by Bishop (available at the campus bookstore).\n\nGood luck this semester!\n\nOffice of the Registrar"
+  }
+]

@@ -1,0 +1,13 @@
+# PhishGuard AI — Development / Training Dependencies
+# These are NOT needed in production. Install separately with:
+#   pip install -r requirements-dev.txt
+
+# Everything in production
+-r requirements.txt
+
+# Dataset fetching (for model training)
+datasets==3.2.0
+
+# Code quality
+flake8==7.1.1
+black==24.10.0
