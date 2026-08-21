@@ -9,7 +9,7 @@
 ![scikit-learn](https://img.shields.io/badge/scikit--learn-TF--IDF%20%2B%20LogReg-F7931E?style=flat-square&logo=scikitlearn&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-blue?style=flat-square)
 
-**Author:** [Virendra Bamne](https://github.com/virendrabamne010) · virendrabamne010@gmail.com
+**Author:** [Vaibhavi Nirgude](https://github.com/virendrabamne010) · virendrabamne010@gmail.com
 
 ---
 
@@ -411,7 +411,7 @@ Documented openly (examiners appreciate honesty):
 
 ## 👤 Author
 
-**Virendra Bamne**
+**Vaibhavi Nirgude**
 - GitHub: [@virendrabamne010](https://github.com/virendrabamne010)
 - Email: virendrabamne010@gmail.com
 
