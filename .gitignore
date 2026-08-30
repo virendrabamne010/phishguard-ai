@@ -28,8 +28,7 @@ backend/token.json
 backend/data/phishguard.db
 backend/data/*.db-journal
 
-# --- Generated ML artifacts & dataset (regenerate via train script) ---
-backend/app/ml/model_artifacts/*.pkl
+# --- Generated ML dataset (regenerate via train script) ---
 **/phishing_dataset.csv
 
 # --- Logs & temp files ---

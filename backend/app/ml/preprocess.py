@@ -17,20 +17,28 @@ except LookupError:
 lemmatizer = WordNetLemmatizer()
 
 
-# ---------------------------------------------------------------------------
-# Urgency keywords ONLY found in actual phishing — not in legitimate emails
-# Removed generic words like "action required", "expire", "update your info"
-# that are completely normal in transactional emails.
-# ---------------------------------------------------------------------------
 URGENCY_KEYWORDS = [
     "verify your account now",
+    "verify your account",
+    "verify your identity",
     "account will be locked",
     "account will be suspended",
+    "account has been suspended",
+    "account has been compromised",
+    "account has been restricted",
+    "account is suspended",
+    "account suspended",
     "confirm your identity immediately",
+    "confirm your identity",
     "unauthorized access detected",
+    "unauthorized access",
+    "detected unauthorized access",
+    "unauthorized activity",
     "your account has been compromised",
     "failure to verify will result",
     "respond within 24 hours or",
+    "respond within 24 hours",
+    "within 24 hours",
     "claim your prize",
     "you've been selected as winner",
     "you have won",
@@ -47,11 +55,42 @@ URGENCY_KEYWORDS = [
     "provide your ssn",
     "provide your social security",
     "click here to avoid suspension",
+    "click here to verify",
     "your account is at risk",
     "verify immediately to avoid",
+    "verify immediately",
     "act now or lose access",
+    "act immediately",
+    "immediate action required",
+    "urgent action required",
+    "final notice",
     "last warning",
+    "secure your funds",
+    "restore your account",
 ]
+
+
+def extract_handcrafted_features(text: str) -> list:
+    """
+    Extract numeric handcrafted features from raw email text (7 features).
+    Must match exactly between training and prediction.
+    """
+    import numpy as np
+    urls = extract_urls(text)
+    urgency_count, _ = count_urgency_keywords(text)
+    caps = calc_caps_ratio(text)
+    punct = calc_punctuation_ratio(text)
+
+    text_length = float(np.log1p(len(text)))
+    word_count = max(len(text.split()), 1)
+    link_to_text_ratio = float(len(urls) / word_count * 100)
+    has_html = 1.0 if ("<a " in text.lower() or "<img" in text.lower()
+                        or "<table" in text.lower() or "<div" in text.lower()
+                        or "<html" in text.lower()) else 0.0
+
+    return [len(urls), urgency_count, caps, punct,
+            text_length, link_to_text_ratio, has_html]
+
 
 # ---------------------------------------------------------------------------
 # Trusted top-level domains — emails FROM these are likely legitimate
@@ -394,11 +433,13 @@ def _base_domain_of(host: str | None) -> str | None:
     return ".".join(parts[-2:]) if len(parts) >= 2 else host.lower()
 
 
-def detect_brand_impersonation(sender: str, urls: list) -> list:
+def detect_brand_impersonation(sender: str, urls: list, subject: str = "") -> list:
     """
     Return a list of human-readable brand-impersonation issues for an email.
     Tokens are matched on hyphen/dot boundaries so 'backup-cdn.com' does NOT
     trigger the 'ups' brand, while 'secure-paypal-login.ru' DOES trigger paypal.
+    Also detects when the subject line claims a brand account/security action
+    while sending from a personal or non-official domain.
     """
     issues: list[str] = []
     sender_domain = get_sender_domain(sender)
@@ -416,7 +457,20 @@ def detect_brand_impersonation(sender: str, urls: list) -> list:
                     )
                 break
 
-    # 2) URL domains impersonating brands they don't belong to
+    # 2) Subject line brand spoofing: e.g. "Urgent: Your PayPal Account Has Been Suspended" from gmail
+    subject_lower = (subject or "").lower()
+    if subject_lower and sender_base:
+        security_terms = ["account", "suspended", "locked", "security", "unauthorized", "alert", "verify", "compromised", "funds", "billing", "payment"]
+        for brand, official in BRAND_OFFICIAL_DOMAINS.items():
+            if re.search(rf"\b{brand}\b", subject_lower):
+                if sender_base not in _BRAND_ACCEPTABLE_BASES[brand]:
+                    if any(st in subject_lower for st in security_terms):
+                        issues.append(
+                            f"Subject mentions '{brand.title()}' account alert but sent from unofficial domain '{sender_domain}'"
+                        )
+                        break
+
+    # 3) URL domains impersonating brands they don't belong to
     seen = set()
     for url in urls or []:
         match = re.match(r"https?://([^/?\s]+)", url, re.IGNORECASE)
@@ -442,6 +496,7 @@ def detect_brand_impersonation(sender: str, urls: list) -> list:
                 break
 
     return issues[:4]
+
 
 
 def extract_features(subject: str, body: str, sender: str) -> dict:

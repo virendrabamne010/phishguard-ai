@@ -26,6 +26,7 @@ from .preprocess import (
     is_sender_trusted,
     is_free_mail_sender,
     detect_brand_impersonation,
+    extract_handcrafted_features,
 )
 
 # ---------------------------------------------------------------------------
@@ -96,15 +97,15 @@ def predict_email(subject: str, body: str, sender: str) -> dict:
     except Exception as e:
         logger.error(f"Error extracting keywords: {e}")
 
-    # Handcrafted features (same order as training)
+    # Handcrafted features (7 features matching trained model)
     urls = extract_urls(full_text)
     url_analysis = analyze_urls(urls)
     urgency_count, urgency_found = count_urgency_keywords(full_text)
     caps = calc_caps_ratio(full_text)
     punct = calc_punctuation_ratio(full_text)
-    handcrafted = np.array([[len(urls), urgency_count, caps, punct]])
+    handcrafted = np.array([extract_handcrafted_features(full_text)])
 
-    # Combined feature matrix
+    # Combined feature matrix (10000 TF-IDF + 7 Handcrafted = 10007)
     X = hstack([tfidf_vec, csr_matrix(handcrafted)])
 
     ml_score = None
@@ -131,9 +132,15 @@ def predict_email(subject: str, body: str, sender: str) -> dict:
     # Only count HIGH-CONFIDENCE urgency phrases specific to phishing
     heuristic_score += min(urgency_count * 10, 25)
 
-    # Caps — only penalise extreme cases (>35% caps is abnormal for real email)
+    # Caps — penalise extreme cases (>35% caps is abnormal for real email)
     if caps > 0.35:
         heuristic_score += int(caps * 40)
+    elif caps > 0.20:
+        heuristic_score += 10
+
+    # Subject line all uppercase
+    if subject == subject.upper() and len(subject) > 6 and any(c.isalpha() for c in subject):
+        heuristic_score += 15
 
     # Excessive punctuation — threshold tuned so ordinary conversational "!"
     # and "?" usage does not score points
@@ -145,14 +152,13 @@ def predict_email(subject: str, body: str, sender: str) -> dict:
     if suspicious:
         heuristic_score += 20
 
-    # Brand impersonation (display-name spoofing / fake brand link domains)
-    # computed once — reused by the trusted-discount guard below
-    impersonation_issues = detect_brand_impersonation(sender, urls)
+    # Brand impersonation (display-name spoofing / fake brand link domains / subject spoofing)
+    impersonation_issues = detect_brand_impersonation(sender, urls, subject)
     if impersonation_issues:
         heuristic_score += min(len(impersonation_issues) * 25, 45)
 
     # ---------------------------------------------------------------------------
-    # Blend: 60% ML, 40% Heuristic (was 30/70 — trusting the model more now)
+    # Blend: 60% ML, 40% Heuristic
     # ---------------------------------------------------------------------------
     risk_score = int(0.6 * ml_score + 0.4 * heuristic_score)
 
@@ -167,9 +173,7 @@ def predict_email(subject: str, body: str, sender: str) -> dict:
 
     # Corroboration guard — when a very short email carries ZERO supporting
     # heuristic evidence (no links, no urgency phrases, clean style), the ML
-    # score alone must never push it into suspicious/phishing. This prevents
-    # false positives on ordinary personal chatter, a known weakness of the
-    # Enron spam corpus where friendly text resembles classic spam.
+    # score alone must never push it into suspicious/phishing.
     if heuristic_score == 0 and len(full_text.split()) < 80:
         risk_score = min(risk_score, 34)
 
@@ -193,7 +197,6 @@ def predict_email(subject: str, body: str, sender: str) -> dict:
 def _score_to_label(score: int) -> str:
     """
     Convert numeric risk score to a label.
-    Updated thresholds (was 30/70, now 35/65) to reduce false positives.
     """
     if score <= 35:
         return "legitimate"
@@ -209,19 +212,17 @@ def _generate_reasons(
 ) -> list:
     """
     Generate human-readable explanations. Only shows reasons that actually fired.
-    Trusted senders get a positive note, not a suspicious one.
     """
     reasons = []
 
-    # Brand impersonation issues (computed once, reused below)
-    impersonation_issues = detect_brand_impersonation(sender, urls)
+    # Brand impersonation issues
+    impersonation_issues = detect_brand_impersonation(sender, urls, subject)
 
-    # Trusted sender note — shown only when the trust discount actually
-    # applies (corporate domains, not free providers, no impersonation)
+    # Trusted sender note
     if is_sender_trusted(sender) and not is_free_mail_sender(sender) and not impersonation_issues:
         reasons.append("✓ Sender domain is verified and trusted")
 
-    # URL analysis — only flag genuinely suspicious URLs
+    # URL analysis
     suspicious_urls = url_analysis.get("suspicious", [])
     clean_urls = url_analysis.get("clean", [])
 
@@ -237,10 +238,10 @@ def _generate_reasons(
         kw_list = ", ".join(f"'{kw}'" for kw in urgency_found[:3])
         reasons.append(f"⚠ Contains high-risk urgency phrase(s): {kw_list}")
 
-    # Extreme caps usage (>35% is abnormal)
+    # Extreme caps usage
     if caps > 0.35:
         reasons.append(f"⚠ Abnormally high uppercase text ({int(caps * 100)}%) — unusual for legitimate email")
-    elif caps > 0.25:
+    elif caps > 0.20:
         reasons.append(f"Moderate uppercase usage ({int(caps * 100)}%)")
 
     # Punctuation abuse
@@ -252,16 +253,15 @@ def _generate_reasons(
     if suspicious:
         reasons.append(f"⚠ Suspicious sender: {sender_reason}")
 
-    # Brand impersonation issues (display name / link domains)
+    # Brand impersonation issues
     for issue in impersonation_issues:
         reasons.append(f"⚠ {issue}")
 
-    # Subject line analysis — only extreme cases
-    subject_lower = subject.lower()
-    if subject == subject.upper() and len(subject) > 5:
+    # Subject line analysis
+    if subject == subject.upper() and len(subject) > 5 and any(c.isalpha() for c in subject):
         reasons.append("⚠ Subject line is entirely in UPPERCASE")
 
-    # Request for personal info — these are always suspicious regardless of sender
+    # Request for personal info
     body_lower = body.lower()
     personal_info_keywords = [
         "bank account number", "credit card number", "cvv",
@@ -307,10 +307,12 @@ def _heuristic_prediction(subject: str, body: str, sender: str) -> dict:
     score = 0
     score += min(len(url_analysis["suspicious"]) * 12, 30)
     score += min(urgency_count * 10, 25)
-    score += int(caps * 40) if caps > 0.35 else 0
+    score += int(caps * 40) if caps > 0.35 else (10 if caps > 0.20 else 0)
+    if subject == subject.upper() and len(subject) > 6 and any(c.isalpha() for c in subject):
+        score += 15
     score += int(punct * 300) if punct > 0.03 else 0
     score += 20 if suspicious else 0
-    impersonation_issues = detect_brand_impersonation(sender, urls)
+    impersonation_issues = detect_brand_impersonation(sender, urls, subject)
     score += min(len(impersonation_issues) * 25, 45)
     if trusted and not free_mail and not impersonation_issues:
         score = max(0, score - 25)
@@ -329,3 +331,4 @@ def _heuristic_prediction(subject: str, body: str, sender: str) -> dict:
         "flagged_reasons": reasons,
         "suspicious_keywords": [],
     }
+

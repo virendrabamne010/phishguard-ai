@@ -1,38 +1,69 @@
 {
-  "trained_at": "2026-08-01T10:24:23.611126+00:00",
-  "total_samples": 5000,
-  "accuracy": 0.98,
-  "precision": 0.9724409448818898,
-  "recall": 0.988,
-  "f1_score": 0.9801587301587301,
-  "roc_auc": 0.9957659999999999,
+  "trained_at": "2026-08-30T17:53:05.319681+00:00",
+  "model_type": "LogisticRegression",
+  "best_params": {
+    "C": "10.0",
+    "solver": "liblinear"
+  },
+  "total_samples": 27706,
+  "train_samples": 22164,
+  "test_samples": 5542,
+  "tfidf_features": 10000,
+  "handcrafted_features": 7,
+  "total_features": 10007,
+  "accuracy": 0.9924215084806929,
+  "precision": 0.9910039582583663,
+  "recall": 0.9938650306748467,
+  "f1_score": 0.9924324324324324,
+  "roc_auc": 0.9994709863629869,
+  "dataset_sources": "pre-existing",
   "features": [
-    "tfidf_ngram_1_2",
+    "tfidf_ngram_1_3",
     "url_count",
     "urgency_count",
     "caps_ratio",
-    "punctuation_ratio"
+    "punctuation_ratio",
+    "text_length",
+    "link_to_text_ratio",
+    "has_html"
   ],
+  "models_evaluated": {
+    "LogisticRegression": {
+      "f1": 0.9924324324324324,
+      "params": {
+        "C": "10.0",
+        "solver": "liblinear"
+      }
+    },
+    "RandomForest": {
+      "f1": 0.9865277528291719,
+      "params": {
+        "max_depth": "None",
+        "min_samples_split": "2",
+        "n_estimators": "300"
+      }
+    }
+  },
   "top_phishing_indicators": {
-    "remove": 4.311979871831665,
-    "http": 4.303168760791908,
-    "money": 4.250186136029793,
-    "account": 3.8996172590165874,
-    "company": 3.7004016775988733,
-    "click": 3.443904764741616,
-    "cheap": 3.381678214840333,
-    "watch": 3.2740417342330983,
-    "low": 3.2229544575748728,
-    "med": 3.202497040584365,
-    "software": 2.9552940252298776,
-    "pill": 2.7645530158175253,
-    "living": 2.7560441036649688,
-    "best": 2.750386256137415,
-    "inch": 2.74054001738473,
-    "investment": 2.725351602378403,
-    "wish": 2.725212337036701,
-    "save": 2.6814331041421826,
-    "drug": 2.6416987094813096,
-    "online": 2.629618525470129
+    "software": 6.406338883619661,
+    "http": 6.146167599765832,
+    "remove": 5.8193639546054605,
+    "hello": 5.144560603394913,
+    "account": 4.734140642334429,
+    "punctuation_ratio": 4.476749612614269,
+    "ca": 4.425819959141256,
+    "money": 4.411607061506363,
+    "viagra": 4.2651197947900235,
+    "investment": 4.203399966420288,
+    "online": 4.195929780782003,
+    "med": 4.16531692084922,
+    "quality": 4.1474950074323305,
+    "mortgage": 4.127776891371186,
+    "php": 4.038544087591353,
+    "click": 3.9822363684031052,
+    "girl": 3.9788138042402528,
+    "body": 3.9653405163181947,
+    "goodbye": 3.9172022285800576,
+    "life": 3.8956851825096206
   }
 }
