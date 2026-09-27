@@ -44,7 +44,7 @@ class Settings(BaseModel):
     ])
     FRONTEND_URL: str = Field(default_factory=lambda: os.getenv("FRONTEND_URL", "http://localhost:5173"))
     REDIRECT_URI: str = Field(default_factory=lambda: os.getenv("REDIRECT_URI", "http://localhost:8000/inbox/oauth/callback"))
-    TRUSTED_HOSTS: list[str] = Field(default_factory=lambda: ["localhost", "127.0.0.1", "testserver"])
+    TRUSTED_HOSTS: list[str] = Field(default_factory=lambda: ["*"])
 
     BASE_DIR: Path = BASE_DIR
     ROOT_DIR: Path = ROOT_DIR
@@ -98,7 +98,7 @@ class Settings(BaseModel):
     @classmethod
     def parse_trusted_hosts(cls, value: Any) -> list[str]:
         if not value:
-            return ["localhost", "127.0.0.1", "testserver"]
+            return ["*"]
         if isinstance(value, str):
             return [host.strip() for host in value.split(",") if host.strip()]
         return value
