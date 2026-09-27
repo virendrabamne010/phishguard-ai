@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: phishguard-backend
+    env: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    disk:
+      name: sqlite-data
+      mountPath: /data
+      sizeGB: 1
+    envVars:
+      - key: DATABASE_URL
+        value: sqlite:////data/phishguard.db
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: ENVIRONMENT
+        value: production
+      - key: FRONTEND_URL
+        value: https://your-vercel-domain.vercel.app # TODO: Update this after Vercel deployment
+      - key: CORS_ORIGINS
+        value: https://your-vercel-domain.vercel.app # TODO: Update this after Vercel deployment
+      - key: SECRET_KEY
+        generateValue: true
