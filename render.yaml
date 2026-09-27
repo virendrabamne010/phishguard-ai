@@ -5,13 +5,7 @@ services:
     rootDir: backend
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
-    disk:
-      name: sqlite-data
-      mountPath: /data
-      sizeGB: 1
     envVars:
-      - key: DATABASE_URL
-        value: sqlite:////data/phishguard.db
       - key: PYTHON_VERSION
         value: 3.11.0
       - key: ENVIRONMENT
